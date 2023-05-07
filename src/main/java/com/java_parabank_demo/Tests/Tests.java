@@ -26,14 +26,14 @@ public class Tests {
     static String errorMessage;
     static String currentURL;
 
-  @BeforeAll
-  public static void OpenTheWebsite(){
-/     driver = BrowserFactory.getBrowser(typeOfTheBrowser);
-      driver.manage().window().maximize();
-      loginPage = new LoginPage(driver);
-      registerPage = new RegisterPage(driver);
-/     forgetLoginInfo = new ForgetLoginInfo(driver);
-  }
+// @BeforeAll
+// public static void OpenTheWebsite(){
+//     driver = BrowserFactory.getBrowser(typeOfTheBrowser);
+//     driver.manage().window().maximize();
+//     loginPage = new LoginPage(driver);
+//     registerPage = new RegisterPage(driver);
+//     forgetLoginInfo = new ForgetLoginInfo(driver);
+ // }
  //   @AfterAll
  //   public static void closeBrowser(){
  //       BrowserFactory.closeBrowser();
