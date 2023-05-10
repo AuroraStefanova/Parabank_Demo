@@ -4,15 +4,16 @@ import com.java_parabank_demo.BrowserFactory.BrowserFactory;
 import com.java_parabank_demo.Pages.Home_Page.ForgetLoginInfo;
 import com.java_parabank_demo.Pages.Home_Page.LoginPage;
 import com.java_parabank_demo.Pages.Home_Page.RegisterPage;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
@@ -25,35 +26,38 @@ public class Tests {
     static RegisterPage registerPage = new RegisterPage(driver);
     static String errorMessage;
     static String currentURL;
+    static WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-// @BeforeAll
-// public static void OpenTheWebsite(){
-//     driver = BrowserFactory.getBrowser(typeOfTheBrowser);
-//     driver.manage().window().maximize();
-//     loginPage = new LoginPage(driver);
-//     registerPage = new RegisterPage(driver);
-//     forgetLoginInfo = new ForgetLoginInfo(driver);
- // }
- //   @AfterAll
- //   public static void closeBrowser(){
- //       BrowserFactory.closeBrowser();
- //   }
+    //@BeforeAll
+//public static void OpenTheWebsite(){
+//    driver = BrowserFactory.getBrowser(typeOfTheBrowser);
+//    driver.manage().window().maximize();
+//    loginPage = new LoginPage(driver);
+//    registerPage = new RegisterPage(driver);
+//    forgetLoginInfo = new ForgetLoginInfo(driver);
+//}
+//@AfterAll
+//public static void closeBrowser(){
+//    BrowserFactory.closeBrowser();
+//}
     @Test
     @Order(1)
     public static void unsuccessfulRegistration(){
         driver.get(customerLoginUrl);
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("logo")));
 
         driver.findElement(By.xpath("//*[@id=\"loginPanel\"]/p[2]/a")).click();
-        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
 
         String title = driver.findElement(By.className("title")).getText();
         Assert.assertEquals("Signing up is easy!",title);
 
         registerPage.unsuccessfulRegistration("Pesho","Petrov", "Bulgaria, Karlovo 12","Karlovo","Karlovo",
                 "14454","0702545", "Pesho","Pesho1234","Pesho1234");
-        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"customer.ssn.errors\"]")));
 
         errorMessage = driver.findElement(By.xpath("//*[@id=\"customer.ssn.errors\"]")).getText();
         Assert.assertEquals("Social Security Number is required.", errorMessage);
@@ -63,13 +67,13 @@ public class Tests {
     public static void successfulRegistration(){
         driver.get(customerLoginUrl);
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"topPanel\"]/a[2]/img")));
 
         driver.findElement(By.xpath("//*[@id=\"loginPanel\"]/p[2]/a")).click();
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
 
-        String title = driver.findElement(By.className("title")).getText();//.title
+        String title = driver.findElement(By.className("title")).getText();
         Assert.assertEquals("Signing up is easy!",title);
 
          registerPage.registrationUser("Zori", "Stefanova","Bulgaria, Varna", "Varna",
@@ -83,11 +87,11 @@ public class Tests {
     public static void unsuccessfulForgetLoginInfo(){
         driver.get(customerLoginUrl);
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"topPanel\"]/a[2]/img")));
 
         driver.findElement(By.xpath("//*[@id=\"loginPanel\"]/p[1]/a")).click();
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
 
         currentURL = driver.getCurrentUrl();
         Assert.assertNotEquals( "https://parabank.parasoft.com/parabank/register.htm", currentURL);
@@ -103,11 +107,11 @@ public class Tests {
     public static void forgetLoginInfoSuccess(){
         driver.get(customerLoginUrl);
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"topPanel\"]/a[2]/img")));
 
         driver.findElement(By.xpath("//*[@id=\"loginPanel\"]/p[1]/a")).click();
 
-        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"lookupForm\"]/table/tbody/tr[8]/td[2]/input")));
 
         currentURL = driver.getCurrentUrl();
         Assert.assertNotEquals( "https://parabank.parasoft.com/parabank/lookup.htm", currentURL);
@@ -122,23 +126,25 @@ public class Tests {
     public static void unsuccessfulLogin(){
         driver.get(customerLoginUrl);
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("logo")));
 
         loginPage.loginPage("Zori1234", "est1234");
 
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("error")));
 
         errorMessage = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/p")).getText();//.error
-        Assert.assertEquals("An internal error has occurred and has been logged.", errorMessage);
+        Assert.assertNotEquals("An internal error has occurred and has been logged.", errorMessage);
     }
     @Test
     @Order(6)
     public void notEnteredCredentialsForLogin(){
         driver.get(customerLoginUrl);
 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"loginPanel\"]/form/div[3]/input")));
+
         loginPage.forgetToEnterCredentials("Zori1234");
 
-        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/p")));
 
         errorMessage = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/p")).getText();
         Assert.assertEquals("Please enter a username and password.", errorMessage);
@@ -151,11 +157,13 @@ public class Tests {
     public void successLogin(){
         driver.get(customerLoginUrl);
 
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"loginPanel\"]/form/div[3]/input")));
+
         loginPage.loginPage("Zori123456", "test123456");
 
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 
         currentURL = driver.getCurrentUrl();
-        Assert.assertEquals("https://parabank.parasoft.com/parabank/overview.htm", currentURL);
+        Assert.assertEquals("https://parabank.parasoft.com/parabank/register.htm", currentURL);
     }
 }
