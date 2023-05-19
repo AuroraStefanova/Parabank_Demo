@@ -15,9 +15,9 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
-public class Tests {
+public class TestsForLoginRegisterAndForgotLogin {
     private static String typeOfTheBrowser = "Chrome";
     static WebDriver driver = BrowserFactory.getBrowser(typeOfTheBrowser);;
     private static String customerLoginUrl = "https://parabank.parasoft.com/parabank/index.htm";
