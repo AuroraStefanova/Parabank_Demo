@@ -26,6 +26,9 @@ public class UpdateContactInfo {
     WebElement phone;
     @FindBy(xpath = "//*[@id=\"rightPanel\"]/div/div/form/table/tbody/tr[8]/td[2]/input")
     WebElement updateProfileButton;
+    public By updateProfileTitle = By.className("title");
+    public By afterUpdateProfileTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div/h1");
+    public By title = By.className("title");
     public UpdateContactInfo(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(this.driver,this);

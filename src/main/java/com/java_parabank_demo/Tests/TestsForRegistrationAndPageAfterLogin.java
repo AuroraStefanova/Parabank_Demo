@@ -2,21 +2,20 @@ package com.java_parabank_demo.Tests;
 import com.java_parabank_demo.BrowserFactory.BrowserFactory;
 import com.java_parabank_demo.Pages.Account_Services.*;
 import com.java_parabank_demo.Pages.Home_Page.RegisterPage;
+import com.java_parabank_demo.helpers.RandomGenerator;
 import org.openqa.selenium.By;
+import com.java_parabank_demo.helpers.Waits;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import java.time.Duration;
-import java.util.UUID;
+
 public class TestsForRegistrationAndPageAfterLogin {
     private static String typeOfTheBrowser = "Chrome";
     static WebDriver driver = BrowserFactory.getBrowser(typeOfTheBrowser);;
     private static String customerLoginUrl = "https://parabank.parasoft.com/parabank/index.htm";
     static String message;
     static String currentURL;
-    static WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     static RegisterPage registerPage = new RegisterPage(driver);
     static BillPayPage billPayPage = new BillPayPage(driver);
     static AccountsOverview accountsOverview = new AccountsOverview(driver);
@@ -24,174 +23,169 @@ public class TestsForRegistrationAndPageAfterLogin {
     static RequestLoan requestLoan = new RequestLoan(driver);
     static TransferFunds transferFunds = new TransferFunds(driver);
     static UpdateContactInfo updateContactInfo = new UpdateContactInfo(driver);
-    public static String GetRandom() {
-        String random = UUID.randomUUID().toString().replace("-", "");
-        return random.substring(0, 6);
-    }
+    static Waits customWait = new Waits();
+    static RandomGenerator randomGenerator = new RandomGenerator();
+
     @Test(priority = 1)
     public static void successfulRegistration(){
         driver.get(customerLoginUrl);
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"topPanel\"]/a[2]/img")));
+        customWait.customWait(driver,Duration.ofSeconds(10),"visibilityOfElementLocated", registerPage.parabankLogo);
 
-        driver.findElement(By.xpath("//*[@id=\"loginPanel\"]/p[2]/a")).click();
+        registerPage.clickRegistrationLink();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated", registerPage.title);
 
-        String title = driver.findElement(By.className("title")).getText();
+        //String title = driver.findElement(By.className("title")).getText();
+        String title = driver.findElement(registerPage.titleRegister).getText();//
         Assert.assertEquals("Signing up is easy!",title);
 
         registerPage.registrationUser("Zori", "Stefanova","Bulgaria, Varna", "Varna",
-                "Varna","12555", "0888542554", "123", GetRandom(), "test123", "test123");
+                "Varna","12555", "0888542554", "123", randomGenerator.GetRandom(), "test123", "test123");
 
-       message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/p")).getText();
+       message = driver.findElement(registerPage.elementAfterRegister).getText();
        Assert.assertEquals( "Your account was created successfully. You are now logged in.", message);
     }
     @Test(priority = 2)
     public static void updateContactInfo(){
         updateContactInfo.goToUpdateContactInfo();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5), "visibilityOfElementLocated",updateContactInfo.updateProfileTitle);
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(updateContactInfo.title).getText();
         Assert.assertEquals("Update Profile", message);
 
-        updateContactInfo.updateProfile(GetRandom(), GetRandom(),"Bulgaria, Gabrovo", "Gabrovo","Gabrovo", "145558","054884");
+        updateContactInfo.updateProfile(randomGenerator.GetRandom(), randomGenerator.GetRandom(),"Bulgaria, Gabrovo", "Gabrovo","Gabrovo", "145558","054884");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5), "visibilityOfElementLocated",updateContactInfo.updateProfileTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(updateContactInfo.afterUpdateProfileTitle).getText();
         Assert.assertEquals("Update Profile", message);
     }
     @Test(priority = 3)
     public static void billPayCorrectly(){
         billPayPage.GoToTheAccountsOverviewForm();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",billPayPage.bilPayTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1")).getText();
+        message = driver.findElement(billPayPage.billPaymentServiceTitle).getText();
         Assert.assertEquals("Bill Payment Service", message);
 
         billPayPage.EnterPayeeInformationAndClickSendPaymentButton("Gosho", "Vidin","Vidin", "Vidin", "141", "02545", "15120","15120", "500");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div[2]/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",billPayPage.bilPayComplete);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div[2]/h1")).getText();
+        message = driver.findElement(billPayPage.afterPaymentTitle).getText();
         Assert.assertNotEquals("Bill Payment Service", message);
     }
     @Test(priority = 4)
     public static void requestLoanFromFirstAccount(){
         requestLoan.GoToTheRequestLoanForm();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",requestLoan.applyForLoanTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(requestLoan.applyForLoanTitle).getText();
         Assert.assertEquals("Apply for a Loan", message);
 
         requestLoan.EnterCredentialsAndApplyForLoanFromFirstAccount("500", "1000");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loanProviderName"))); //xpat //*[@id="loanProviderName"]
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",requestLoan.loanProvider);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(requestLoan.applyForLoanTitle).getText();
         Assert.assertEquals("Loan Request Processed", message);
     }
     @Test(priority = 5)
     public static void requestLoanFromSecondAccount(){
         requestLoan.GoToTheRequestLoanForm();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",requestLoan.applyForLoanTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(requestLoan.applyForLoanTitle).getText();
         Assert.assertEquals("Apply for a Loan", message);
 
         requestLoan.EnterCredentialsAndApplyForLoanFromSecondAccount("200", "100");
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(requestLoan.applyForLoanTitle).getText();
         Assert.assertNotEquals("Loan Request Processed", message);
     }
     @Test(priority = 6)
-    //@Order(6)// TODO -NOT PASS
     public static void transferFundsFromFirstToSecondAccount(){
-        successfulRegistration();
-        requestLoanFromFirstAccount();
-
         transferFunds.OpenTransferFunds();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",transferFunds.transferFundsTitle);
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(transferFunds.transferFundsTitle).getText();
         Assert.assertEquals("Transfer Funds", message);
 
-        //TODO
-        driver.get(currentURL);
-        driver.navigate().refresh();
+       driver.navigate().to(driver.getCurrentUrl());
 
         transferFunds.transferFromFirstAccountToSecondAccount("200");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",transferFunds.transferFundsTitle);
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(transferFunds.transferFundsTitle).getText();
         Assert.assertEquals("Transfer Complete!", message);
     }
     @Test(priority = 7)
-    //@Order(7) TODO - NOT PASS
     public static void transferFundsFromSecondToFirstAccount(){
         transferFunds.OpenTransferFunds();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",transferFunds.transferFundsTitle);
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(transferFunds.transferFundsTitle).getText();
         Assert.assertEquals("Transfer Funds", message);
+
+        driver.navigate().to(driver.getCurrentUrl());
 
         transferFunds.transferFromSecondAccountToFirstAccount("300");
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(transferFunds.transferFundsTitle).getText();
         Assert.assertEquals("Transfer Complete!", message);
     }
     @Test(priority = 8)
     public static void openNewSavingAccount(){
         openNewAccount.GoToTheOpenNewAccountForm();
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(openNewAccount.openAccountFirstTitle).getText();
         Assert.assertEquals("Open New Account", message);
 
         openNewAccount.OpenNewSavingsAccountAndDepositFromFirstAccount();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",openNewAccount.openNewAccountTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(openNewAccount.congratulationsForNewOpenAccount).getText();
         Assert.assertNotEquals("Congratulations, your account is now open.", message);
     }
-    @Test(priority = 9)
+    @Test(priority = 9)//
     public static void openNewCheckingAccount(){
         openNewAccount.GoToTheOpenNewAccountForm();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",openNewAccount.openAccountFirstTitle);
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(openNewAccount.openAccountFirstTitle).getText();
         Assert.assertEquals("Open New Account", message);
 
         openNewAccount.OpenNewCheckingAccountAndDepositFromFirstAccount();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",openNewAccount.openNewAccountTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div/h1")).getText();
+        message = driver.findElement(openNewAccount.congratulationsForNewOpenAccount).getText();
         Assert.assertNotEquals("Congratulations, your account is now open.", message);
     }
     @Test(priority = 10)
     public static void accountOverview(){
         accountsOverview.GoToTheAccountsOverviewForm();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("title")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",accountsOverview.accountOverviewTitle);
 
-        message = driver.findElement(By.className("title")).getText();
+        message = driver.findElement(accountsOverview.accountOverviewTitle).getText();
         Assert.assertEquals("Accounts Overview", message);
 
         accountsOverview.accountOverview();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1")));
+        customWait.customWait(driver,Duration.ofSeconds(5),"visibilityOfElementLocated",accountsOverview.overviewAccountTitle);
 
-        message = driver.findElement(By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1")).getText();
+        message = driver.findElement(accountsOverview.overviewAccountTitle).getText();
         Assert.assertNotEquals("Account Activity", message);
         driver.close();
     }

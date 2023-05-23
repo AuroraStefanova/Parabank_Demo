@@ -20,6 +20,10 @@ public class RequestLoan {
     WebElement fromAccountDropMenuFirstAccount;
     @FindBy(xpath = "//*[@id='fromAccountId']/option[2]")
     WebElement fromAccountDropMenuSecondAccount;
+    public By applyForLoanTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div/h1");
+                                                    // //*[@id="rightPanel"]/div/div/h1
+    public By loanProvider = By.id("loanProviderName");
+
     public RequestLoan(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(this.driver,this);

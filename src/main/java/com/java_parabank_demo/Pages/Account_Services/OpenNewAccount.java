@@ -16,6 +16,9 @@ public class OpenNewAccount {
     WebElement selectTheFirstAccount;
     @FindBy(css = ".button[value=\"Open New Account\"]")
     WebElement openNewAccountButton;
+    public By openNewAccountTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div/h1");
+    public By openAccountFirstTitle = By.className("title");
+    public By congratulationsForNewOpenAccount = By.xpath("//*[@id=\"rightPanel\"]/div/div/h1");
     public OpenNewAccount(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver,this);

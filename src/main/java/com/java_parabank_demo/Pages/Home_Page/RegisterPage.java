@@ -1,5 +1,6 @@
 package com.java_parabank_demo.Pages.Home_Page;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -32,9 +33,19 @@ public class RegisterPage {
     @FindBy(xpath = "//*[@id=\"customerForm\"]/table/tbody/tr[13]/td[2]/input")
     WebElement registerButton;
 
+    public By titleRegister = By.className("title");
+    public By elementAfterRegister = By.xpath("//*[@id=\"rightPanel\"]/p");
+    public By registerLink = By.xpath("//*[@id=\"loginPanel\"]/p[2]/a");
+    public By parabankLogo = By.xpath("//*[@id=\"topPanel\"]/a[2]/img");
+    public By title = By.className("title");
+
     public RegisterPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(this.driver,this);
+    }
+
+    public void clickRegistrationLink(){
+        driver.findElement(registerLink).click();
     }
     public void registrationUser(String firstName, String lastName, String address, String city, String state,
                                  String zipCode, String phone, String ssn, String userName, String password, String confirm){

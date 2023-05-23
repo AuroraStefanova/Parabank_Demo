@@ -32,6 +32,10 @@ public class BillPayPage {
     WebElement fromAccountId;
     @FindBy(css = ".button[type='submit']")
     WebElement sendPaymentButton;
+    public By bilPayTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1");
+    public By bilPayComplete = By.xpath("//*[@id=\"rightPanel\"]/div/div[2]/h1");
+    public By billPaymentServiceTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1");
+    public By afterPaymentTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div[2]/h1");
     public BillPayPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver,this);

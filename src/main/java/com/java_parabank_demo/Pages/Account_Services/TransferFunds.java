@@ -20,6 +20,7 @@ public class TransferFunds {
     WebElement toAccountOne;
     @FindBy(xpath = "//*[@id=\"toAccountId\"]/option[2]")
     WebElement toAccountTwo;
+    public By transferFundsTitle = By.className("title");
     public TransferFunds(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(this.driver,this);

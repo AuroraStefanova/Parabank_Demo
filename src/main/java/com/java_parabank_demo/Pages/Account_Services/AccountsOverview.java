@@ -8,22 +8,18 @@ import org.openqa.selenium.support.PageFactory;
 
 public class AccountsOverview {
     WebDriver driver;
-    @FindBy(xpath = "//*[@id=\"leftPanel\"]/ul/li[2]/a")
-    WebElement accountOverviewLink;
+   // @FindBy(xpath = "//*[@id=\"leftPanel\"]/ul/li[2]/a")
+   // WebElement accountOverviewLink;
     @FindBy(xpath = "//*[@id=\"accountTable\"]/tbody/tr[1]/td[1]")////*[@id="accountTable"]/tbody/tr[1]/td[1]/a
     WebElement accountLink;
-
-   // @FindBy(xpath = "//*[@id=\"rightPanel\"]/div/div[2]/form/table/tbody/tr[3]/td[2]/input")
-   // WebElement goButtonFromAccountActivity;
-
-
-//TODO Add locators for page elements i.e. account num, account balance, available amount, total
+    By accountsOverviewButton = By.linkText("Accounts Overview");
+    public By accountOverviewTitle = By.className("title");
+    public By overviewAccountTitle = By.xpath("//*[@id=\"rightPanel\"]/div/div[1]/h1");
 
     public AccountsOverview(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver,this);
     }
-    By accountsOverviewButton = By.linkText("Accounts Overview");
 
     public void GoToTheAccountsOverviewForm(){
         driver.findElement(accountsOverviewButton).click();
@@ -31,5 +27,4 @@ public class AccountsOverview {
     public void accountOverview(){
         this.accountLink.click();
     }
-    //TODO  add one transaction click on the account click on the GO button
 }
